@@ -1,3 +1,73 @@
+def knn_breast_cancer():
+    """
+    K-近邻算法
+    威斯康星州乳腺癌数据集
+    含有30个特征、569条记录、目标值为0或1
+    :return:
+    """
+    # 导包
+    from sklearn.datasets import load_breast_cancer
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.metrics import classification_report
+    from sklearn.model_selection import GridSearchCV
+    # 导入数据
+    data_cancer = load_breast_cancer()
+    # 将数据集划分为训练集和测试集
+    x_train, x_test, y_train, y_test = train_test_split(
+        data_cancer.data, data_cancer.target, test_size=0.25)
+    # 数据标准化处理
+    stdScaler = StandardScaler().fit(x_train)
+    x_trainStd = stdScaler.transform(x_train)
+    x_testStd = stdScaler.transform(x_test)
+    # 使用KNeighborsClassifier函数构建knn模型
+    knn_model = KNeighborsClassifier()
+    knn_model.fit(x_trainStd, y_train)
+    param_grid = {"n_neighbors": [1, 3, 5, 7]}
+    grid_search = GridSearchCV(knn_model, param_grid=param_grid, cv=5).fit(x_trainStd, y_train)
+    print("网格搜索中最佳结果的参数设置：", grid_search.best_params_)
+    print("网格搜索中最高分数估计器的分数为：", grid_search.best_score_)
+    print("测试集准确率为：", knn_model.score(x_testStd, y_test))
+    print("每个类别的精确率和召回率：\n", classification_report(y_test, knn_model.predict(x_testStd),
+                                                   target_names=data_cancer.target_names))
+    print("预测测试集前5个结果为：", knn_model.predict(x_testStd)[:5])
+    # print("测试集前5个最近邻点为：\n", knn_model.kneighbors(x_testStd)[0][:5],
+    #       "\n测试集前5个最近邻点的距离：\n", knn_model.kneighbors(x_testStd)[1][:5])
+
+
+def knn_iris():
+    """
+    K-近邻算法
+     鸢尾花数据集
+    含有3个特征、150条记录、目标值为0、1、2
+    :return:
+    """
+    # 导包
+    from sklearn.datasets import load_iris
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.metrics import classification_report
+    # 导入数据
+    data_iris = load_iris()
+    # 将数据集划分为训练集和测试集
+    x_train, x_test, y_train, y_test = train_test_split(
+        data_iris.data, data_iris.target, test_size=0.25)
+    # 数据标准化处理
+    stdScaler = StandardScaler().fit(x_train)
+    x_trainStd = stdScaler.transform(x_train)
+    x_testStd = stdScaler.transform(x_test)
+    # 使用KNeighborsClassifier函数构建knn模型
+    knn_model = KNeighborsClassifier()
+    knn_model.fit(x_trainStd, y_train)
+    print("测试集准确率为：", knn_model.score(x_testStd, y_test))
+    print("每个类别的精确率和召回率：\n",
+          classification_report(y_test, knn_model.predict(x_test), target_names=data_iris.target_names))
+    print("预测测试集前5个结果为：", knn_model.predict(x_testStd)[:5])
+    # print("测试集前5个最近邻点为：\n", knn_model.kneighbors(x_testStd)[0][:5],
+    #       "\n测试集前5个最近邻点的距离：\n", knn_model.kneighbors(x_testStd)[1][:5])
+
 
 def knn():
     """
@@ -5,33 +75,34 @@ def knn():
     :return:
     """
     import pandas as pd
-    #读取数据
+    # 读取数据
     data = pd.read_csv("./")
 
-    #处理数据
-    #1.缩小数据范围，查询数据信息
+    # 处理数据
+    # 1.缩小数据范围，查询数据信息
     data = data.query("x>1.0 & x<1.25 & y>2.5 & y<2.75")
-    #处理时间的数据
-    time_value = pd.to_datetime(data["time"],unit="s")
-    #把日期格式转换成字典格式
+    # 处理时间的数据
+    time_value = pd.to_datetime(data["time"], unit="s")
+    # 把日期格式转换成字典格式
     time_value = pd.DatetimeIndex(time_value)
 
-    #构造特征值
+    # 构造特征值
     data["day"] = time_value.day
     data["hour"] = time_value.hour
     data["weekday"] = time_value.weekday
 
-    #删除时间戳特征
-    data = data.drop(["time"],axis=1)
+    # 删除时间戳特征
+    data = data.drop(["time"], axis=1)
 
-    #把签到的数量少于n个目标位置删除
+    # 把签到的数量少于n个目标位置删除
     place_count = data.groupby("place_id").count()
     tf = place_count[place_count.row_id > 3].reset_index()
     data = data[data["place_id"].isin(tf.place_id)]
 
-    #取出数据中的特征值和目标值
+    # 取出数据中的特征值和目标值
     y = data["place_id"]
-    x = data.drop(["place_id"],axis=1)
+    x = data.drop(["place_id"], axis=1)
+
 
 def naive_bayes():
     """
@@ -47,30 +118,52 @@ def naive_bayes():
     from sklearn.model_selection import train_test_split
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.naive_bayes import MultinomialNB
-    from sklearn.metrics import classification_report
-    #加载数据
+    # 加载数据
     news = fetch_20newsgroups(subset="all")
-    #数据分割
-    x_train,x_test,y_train,y_test = train_test_split(news.data,news.target,test_size=0.25)
-    #对数据进行特征抽取,实例化TF-IDF
+    # 数据分割
+    x_train, x_test, y_train, y_test = train_test_split(news.data, news.target, test_size=0.25)
+    # 对数据进行特征抽取,实例化TF-IDF
     tf = TfidfVectorizer()
-    #以训练集中的词的列表进行每篇文章重要性统计
+    # 以训练集中的词的列表进行每篇文章重要性统计
     x_train = tf.fit_transform(x_train)
     # print(tf.get_feature_names())
     x_test = tf.transform(x_test)
-    #进行朴素贝叶斯算法的预测
+    # 进行朴素贝叶斯算法的预测
     mlt = MultinomialNB(alpha=1.0)
-    # print(x_train.toarray())
-    mlt.fit(x_train,y_train)
+    mlt.fit(x_train, y_train)
     y_predict = mlt.predict(x_test)
-    print("预测的文章类别为：",y_predict)
-
-    #获取预测的准确率
-    print("准确率为：",mlt.score(x_test,y_test))
-
-    print("每个类别的精确率和召回率：",classification_report(y_test,y_predict,
-                                                target_names=news.target_names))
+    print("预测测试集前10个结果：", y_predict[:10])
+    # 获取预测的准确率
+    print("测试集准确率为：", mlt.score(x_test, y_test))
     return None
+
+
+def decision_tree_iris():
+    """
+    决策树鸢尾花数据集
+    :return:
+    """
+    # 导包
+    from sklearn.model_selection import train_test_split
+    from sklearn.datasets import load_iris
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn import tree
+    import graphviz
+    # 加载数据
+    data_iris = load_iris()
+    # 拆分数据集
+    x_train, x_test, y_train, y_test = train_test_split(data_iris.data, data_iris.target, test_size=0.25)
+    # 实例化决策树估计器
+    decision_tree_model = DecisionTreeClassifier()
+    # 训练数据
+    decision_tree_model.fit(x_train, y_train)
+    # 测试集得分
+    print("测试集得分: ", decision_tree_model.score(x_test, y_test))
+    # dot_data = tree.export_graphviz(decision_tree_model,out_file=None)
+    # graph = graphviz.Source(dot_data)
+    # graph.render("iris")
+    pass
+
 
 def decision_tree():
     """
@@ -84,37 +177,37 @@ def decision_tree():
         5.决策树估计器预估
     :return:
     """
-    #导包
+    # 导包
     import pandas as pd
     from sklearn.model_selection import train_test_split
     from sklearn.feature_extraction import DictVectorizer
-    from sklearn.tree import DecisionTreeClassifier,export_graphviz
-    #加载数据
+    from sklearn.tree import DecisionTreeClassifier, export_graphviz
+    # 加载数据
     titan = pd.read_csv("http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic.txt")
-    #处理数据，找出特征值和目标值
-    x = titan[["pclass","age","sex"]]
+    # 处理数据，找出特征值和目标值
+    x = titan[["pclass", "age", "sex"]]
     y = titan["survived"]
     # print(x["age"])
-    #缺失值处理。
+    # 缺失值处理。
     # inplace=True,不创建新的对象，直接对原始对象进行修改
     # inplace=False,对数据进行修改，创建并返回新的对象接收修改的结果
-    x["age"].fillna(x["age"].mean(),inplace=True)
+    x["age"].fillna(x["age"].mean(), inplace=True)
 
-    #分割数据集为训练集和测试机
-    x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.25)
+    # 分割数据集为训练集和测试机
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
 
-    #特征工程：DictVectorizer对非数字化数据进行特征值化 (one_hot编码)
+    # 特征工程：DictVectorizer对非数字化数据进行特征值化 (one_hot编码)
     dict = DictVectorizer(sparse=False)
-    #调用fit_transform()输入数据并转换，输入的数据是字典格式
+    # 调用fit_transform()输入数据并转换，输入的数据是字典格式
     x_train = dict.fit_transform(x_train.to_dict(orient="records"))
     print(dict.get_feature_names())
     x_test = dict.transform(x_test.to_dict(orient="records"))
     print(x_train)
-    #使用决策树估计器进行预测
+    # 使用决策树估计器进行预测
     deci_tree = DecisionTreeClassifier()
-    #训练数据
-    deci_tree.fit(x_train,y_train)
-    print("预测的准确率：",deci_tree.score(x_test,y_test) )
+    # 训练数据
+    deci_tree.fit(x_train, y_train)
+    print("预测的准确率：", deci_tree.score(x_test, y_test))
     # dot_data = export_graphviz(deci_tree,out_file=None,feature_names=["年龄","pclass=1st","pclass=2st","pclass=3st",'女性', '男性'])
 
 
@@ -124,52 +217,46 @@ def random_forest():
     泰坦尼克号乘客生存分析
     :return:
     """
-    #导包
+    # 导包
     import pandas as pd
     from sklearn.model_selection import train_test_split
     from sklearn.feature_extraction import DictVectorizer
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import GridSearchCV
-    import sys
 
-    # sys.setrecursionlimit(100000)
-    #加载数据
+    # 加载数据
     titan = pd.read_csv("http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic.txt")
-
-    #处理数据找出特征值
-    x = titan[["pclass","age","sex"]]
+    # 处理数据,找出特征值和目标值
+    x = titan[["pclass", "age", "sex"]]
     y = titan["survived"]
     # print(x.loc[:,"age"])
 
-
-    #缺失值处理。inplace=True不创建对象直接对原对象进行修改
-    x.loc[:,"age"].fillna(x.loc[:,"age"].mean,inplace=True)
+    # 缺失值处理。inplace=True不创建对象直接对原对象进行修改
+    x.loc[:, "age"].fillna(x.loc[:, "age"].mean, inplace=True)
     # x["age"].fillna(x["age"].mean,inplace=True)
 
-    #分割数据集为训练集和测试集
-    x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.25)
+    # 分割数据集为训练集和测试集
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
 
-    #数据处理：对数据进行特征值化(特征抽取)。
+    # 数据处理：对数据进行特征值化(特征抽取)。
     dict = DictVectorizer(sparse=False)
 
-    #训练转换数据
+    # 训练转换数据
     x_train = dict.fit_transform(x_train.to_dict(orient="records"))
-    print(dict.get_feature_names())
+
     x_test = dict.transform(x_test.to_dict(orient="records"))
 
-    #随机森立进行预测
+    # 随机森立进行预测
     rf = RandomForestClassifier()
-    # print(rf.score(x_test,y_test))
-
-    #超参数
-    param = {"n_estimators":[120,200,300,500,800,1200],"max_depth":[5,8,15,25,30]}
-    #网格搜索与交叉验证
-    gc = GridSearchCV(rf,param_grid= param,cv=2)
-
-    gc.fit(x_train.to_dict(orient="records"),y_train.to_dict(orient="records"))
-    print("准确率：",gc.score(x_test,y_test))
-    print("查看选择的参数：",gc.best_params_)
+    # 超参数
+    param = {"n_estimators": [120, 200, 300, 500, 800, 1200], "max_depth": [5, 8, 15, 25, 30]}
+    # 网格搜索与交叉验证
+    gc = GridSearchCV(rf, param_grid=param, cv=2)
+    gc.fit(x_train, y_train)
+    print("准确率：", gc.score(x_test, y_test))
+    print("查看选择的参数：", gc.best_params_)
     return None
+
 
 def logistic_regression():
     """
@@ -179,36 +266,36 @@ def logistic_regression():
         数据：load_breast_cancer(威斯康星州乳腺癌数据)，包含30个特征，569条记录，目标值为0或1
     :return:
     """
-    #导包
+    # 导包
     from sklearn.datasets import load_breast_cancer
     from sklearn.model_selection import train_test_split
     from sklearn.preprocessing import StandardScaler
     from sklearn.linear_model import LogisticRegression
 
-    #加载数据
+    # 加载数据
     data_cancer = load_breast_cancer()
-    #将数据集划分为训练集和测试机
-    x_train,x_test,y_train,y_test = train_test_split(data_cancer["data"],data_cancer["target"],test_size=0.25)
+    # 将数据集划分为训练集和测试机
+    x_train, x_test, y_train, y_test = train_test_split(data_cancer["data"], data_cancer["target"], test_size=0.25)
 
-    #数据标准化
+    # 数据标准化
     standard = StandardScaler()
     standard.fit(x_train)
     x_trainStd = standard.transform(x_train)
     x_testStd = standard.transform(x_test)
 
-    #构建模型
+    # 构建模型
     logestic_model = LogisticRegression(solver="saga")
-    logestic_model.fit(x_trainStd,y_train)
-    print("训练的模型为：",logestic_model)
-    print("模型各特征的相关系数：",logestic_model.coef_)
+    logestic_model.fit(x_trainStd, y_train)
+    print("训练的模型为：", logestic_model)
+    print("模型各特征的相关系数：", logestic_model.coef_)
 
-    #预测测试机
-    print("预测的测试机结果为：\n",logestic_model.predict(x_testStd))
-    print("预测的准确率为：\n",logestic_model.score(x_testStd,y_test))
+    # 预测测试机
+    print("预测的测试机结果为：\n", logestic_model.predict(x_testStd))
+    print("预测的准确率为：\n", logestic_model.score(x_testStd, y_test))
     return None
 
-if __name__=="__main__":
 
+if __name__ == "__main__":
     """
     分类算法1：k近邻算法(KNN)
     概念：如果一个样本中在特定空间中的K个最相似(即特征空间中最相邻)的样本中的大多数属于某一个类别,
@@ -224,6 +311,8 @@ if __name__=="__main__":
         alpha:拉普拉斯平滑系数，默认1
     """
     # naive_bayes()
+    # knn_breast_cancer()
+    knn_iris()
 
     """
     分类算法3：决策树。思想很简单就是if else
@@ -236,6 +325,7 @@ if __name__=="__main__":
     返回值：决策树的路径
     """
     # decision_tree()
+    # decision_tree_iris()
 
     """
     分类算法4：随机森林(又叫集成学习)
@@ -255,7 +345,7 @@ if __name__=="__main__":
         3.能够处理高维数据，且不用降维
         4.对缺省的数据能够获得很好的结果
     """
-    # random_forest()
+    random_forest()
 
     """
     分类算法5：逻辑回归
@@ -264,4 +354,4 @@ if __name__=="__main__":
         API：sklearn.linear_model.LogisticRegression
         
     """
-    logistic_regression()
+    # logistic_regression()
