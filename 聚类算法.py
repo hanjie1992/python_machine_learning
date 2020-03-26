@@ -106,7 +106,41 @@ def dbscan_clustering():
     plt.show()
 
 
+def gmm_clustering():
+    """
+    高斯混合模型（GMM）--iris数据集案例
+    :return:
+    """
+    # 导包
+    from sklearn import datasets
+    from sklearn.mixture import GaussianMixture
+    import matplotlib.pyplot as plt
+    from sklearn.cluster import KMeans
 
+    # 加载数据
+    iris = datasets.load_iris()
+    x = iris.data
+    y = iris.target
+    #绘制样本数据
+    plt.scatter(x[:,0],x[:,1],c=y)
+    plt.title("iris",size=18)
+    plt.show()
+
+    # 构建聚类为3的GMM模型
+    gmm_model = GaussianMixture(n_components=3).fit(x)
+    print("GMM模型的权重为：",gmm_model.weights_)
+    print("GMM模型的均值为：",gmm_model.means_)
+    #获取GMM模型聚类结果
+    gmm_pre = gmm_model.predict(x)
+    plt.scatter(x[:,0],x[:,1],c = gmm_pre)
+    plt.title("GMM",size=18)
+    plt.show()
+    #K-means聚类
+    km_pre = KMeans(n_clusters=3).fit_predict(x)
+    plt.scatter(x[:,0],x[:,1],c=km_pre)
+    plt.title("K-means",size=18)
+    plt.show()
+    return None
 
 if __name__ =="__main__":
     """
@@ -134,4 +168,9 @@ if __name__ =="__main__":
     """
     DBSCAN(密度聚类)
     """
-    dbscan_clustering()
+    # dbscan_clustering()
+
+    """
+    高斯混合模型（GMM）
+    """
+    gmm_clustering()
