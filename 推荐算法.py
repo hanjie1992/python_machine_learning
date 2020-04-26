@@ -24,15 +24,16 @@ def apriori():
     print(type(te_ary))
     df = pd.DataFrame(te_ary,columns=te.columns_)
     #利用apriori找出频繁项集
-    freq = apriori(df,min_support=0.5,use_colnames=True)
+    freq = apriori(df,min_support=0.4,use_colnames=True)
 
     #导入关联规则包
     from mlxtend.frequent_patterns import association_rules
     #计算关联规则
     result = association_rules(freq,metric="confidence",min_threshold=0.6)
+    # 排序
     result.sort_values(by = 'confidence',ascending=False,axis=0)
-
     print(result)
+    result.to_excel("./result.xlsx")
     return None
 
 
@@ -69,4 +70,4 @@ if __name__=="__main__":
              提升度为：(2/3)/(3/5)=1.11
              说明牛奶卖的越多，鸡蛋也会增多
     """
-    # apriori()
+    apriori()

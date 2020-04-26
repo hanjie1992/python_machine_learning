@@ -76,7 +76,7 @@ def dbscan_clustering():
     shuffle ：洗乱，默认值是True
     random_state:官网解释是随机生成器的种子
     """
-    x1,y2 = datasets.make_blobs(n_samples=1000,n_features=2,centers=[[1.2,1.2]],cluster_std=[[.1]],random_state=9)
+    x1,y2 = datasets.make_blobs(n_samples=1000,n_features=2,centers=[[1.2,1.2]],cluster_std=[[0.1]],random_state=9)
     # 一簇对比数据
     """
     datasets.make_circles()专门用来生成圆圈形状的二维样本.
@@ -158,7 +158,7 @@ if __name__ =="__main__":
             3.接着对标记的聚类中心之后，重新计算出每个聚类的新中心点
             4.如果计算得出的新中心点与原中心点一样，那么结束，否则重新进行第二步过程
     """
-    # k_means()
+    k_means()
 
     """
     聚类算法2：层次聚类
@@ -173,4 +173,4 @@ if __name__ =="__main__":
     """
     高斯混合模型（GMM）
     """
-    gmm_clustering()
+    # gmm_clustering()

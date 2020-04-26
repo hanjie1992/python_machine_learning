@@ -121,6 +121,7 @@ def naive_bayes():
     # 加载数据
     news = fetch_20newsgroups(subset="all")
     # 数据分割
+    print(news.data[:2])
     x_train, x_test, y_train, y_test = train_test_split(news.data, news.target, test_size=0.25)
     # 对数据进行特征抽取,实例化TF-IDF
     tf = TfidfVectorizer()
@@ -128,6 +129,8 @@ def naive_bayes():
     x_train = tf.fit_transform(x_train)
     # print(tf.get_feature_names())
     x_test = tf.transform(x_test)
+    print(x_train.shape)
+    print(x_test.shape)
     # 进行朴素贝叶斯算法的预测
     mlt = MultinomialNB(alpha=1.0)
     mlt.fit(x_train, y_train)
@@ -159,9 +162,10 @@ def decision_tree_iris():
     decision_tree_model.fit(x_train, y_train)
     # 测试集得分
     print("测试集得分: ", decision_tree_model.score(x_test, y_test))
-    # dot_data = tree.export_graphviz(decision_tree_model,out_file=None)
-    # graph = graphviz.Source(dot_data)
-    # graph.render("iris")
+    # 决策过程可视化，安装graphviz,windows运行需要添加到环境变量，结果输出为pdf文件
+    dot_data = tree.export_graphviz(decision_tree_model,out_file=None)
+    graph = graphviz.Source(dot_data)
+    graph.render("iris")
     pass
 
 
@@ -186,6 +190,7 @@ def decision_tree():
     titan = pd.read_csv("http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic.txt")
     # 处理数据，找出特征值和目标值
     x = titan[["pclass", "age", "sex"]]
+    print(type(x))
     y = titan["survived"]
     # print(x["age"])
     # 缺失值处理。
@@ -195,14 +200,15 @@ def decision_tree():
 
     # 分割数据集为训练集和测试机
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
-
     # 特征工程：DictVectorizer对非数字化数据进行特征值化 (one_hot编码)
     dict = DictVectorizer(sparse=False)
     # 调用fit_transform()输入数据并转换，输入的数据是字典格式
     x_train = dict.fit_transform(x_train.to_dict(orient="records"))
     print(dict.get_feature_names())
+    # orient="records" 形成[{column -> value}, … , {column -> value}]的结构
+    # 整体构成一个列表，内层是将原始数据的每行提取出来形成字典
     x_test = dict.transform(x_test.to_dict(orient="records"))
-    print(x_train)
+    # print(x_train)
     # 使用决策树估计器进行预测
     deci_tree = DecisionTreeClassifier()
     # 训练数据
@@ -246,7 +252,7 @@ def random_forest():
 
     x_test = dict.transform(x_test.to_dict(orient="records"))
 
-    # 随机森立进行预测
+    # 随机森林进行预测
     rf = RandomForestClassifier()
     # 超参数
     param = {"n_estimators": [120, 200, 300, 500, 800, 1200], "max_depth": [5, 8, 15, 25, 30]}
@@ -257,6 +263,32 @@ def random_forest():
     print("查看选择的参数：", gc.best_params_)
     return None
 
+def random_forest_cancer():
+    """
+    随机森林
+    威斯康星州乳腺癌数据集
+    含有30个特征、569条记录、目标值为0或1
+    :return:
+    """
+    from sklearn.datasets import load_breast_cancer
+    from sklearn.model_selection import train_test_split
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.preprocessing import StandardScaler
+    # 导入数据
+    data_cancer = load_breast_cancer()
+    # 将数据集划分为训练集和测试集
+    x_train,x_test,y_train,y_test = train_test_split(
+        data_cancer.data,data_cancer.target,test_size=0.25)
+    # # 数据标准化处理
+    # stdScaler = StandardScaler().fit(x_train)
+    # x_trainStd = stdScaler.transform(x_train)
+    # x_testStd = stdScaler.transform(x_test)
+    rf_model = RandomForestClassifier(n_estimators=10)
+    rf_model.fit(x_train,y_train)
+    print("训练出的前2个决策树的模型为：",rf_model.estimators_[0:2])
+    print("预测测试集前10个结果为：",rf_model.predict(x_test)[:10])
+    print("测试集准确率为:",rf_model.score(x_test,y_test))
+    pass
 
 def logistic_regression():
     """
@@ -295,6 +327,9 @@ def logistic_regression():
     return None
 
 
+
+
+
 if __name__ == "__main__":
     """
     分类算法1：k近邻算法(KNN)
@@ -311,8 +346,8 @@ if __name__ == "__main__":
         alpha:拉普拉斯平滑系数，默认1
     """
     # naive_bayes()
-    # knn_breast_cancer()
-    knn_iris()
+    knn_breast_cancer()
+    # knn_iris()
 
     """
     分类算法3：决策树。思想很简单就是if else
@@ -326,6 +361,7 @@ if __name__ == "__main__":
     """
     # decision_tree()
     # decision_tree_iris()
+
 
     """
     分类算法4：随机森林(又叫集成学习)
@@ -345,7 +381,8 @@ if __name__ == "__main__":
         3.能够处理高维数据，且不用降维
         4.对缺省的数据能够获得很好的结果
     """
-    random_forest()
+    # random_forest()
+    # random_forest_cancer()
 
     """
     分类算法5：逻辑回归

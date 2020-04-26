@@ -29,11 +29,12 @@ def countvec():
     #实例化CountVectorizer()
     vector = CountVectorizer()
     #调用fit_transform输入并转换数据
-    res = vector.fit_transform(["life is short,i like python","life is too long,i dislike python"])
+    res = vector.fit_transform(["life is short,i like python",
+                                "life is too long,i dislike python"])
     # 获取特征值
     print(vector.get_feature_names())
     # 转换后的数据
-    print(res.toarray())
+    # print(res.toarray())
     return None
 
 def countvec_chinese():
@@ -47,12 +48,14 @@ def countvec_chinese():
     #实例化CountVectorizer()
     vector = CountVectorizer()
     #调用fit_transfrom输入并转换数据
-    # data = vector.fit_transform(["人生苦短，我用python","人生漫长，不用python"])
-    data = vector.fit_transform(["人生 苦短，我 喜欢 python","人生 漫长，不用 python"])
+    # data = vector.fit_transform(
+    # ["人生苦短，我用python","人生漫长，不用python"])
+    data = vector.fit_transform(
+        ["人生苦短，我喜欢python","人生漫长，不用python"])
     #获取数据特征值
     print(vector.get_feature_names())
     #转换后的数据
-    print(data.toarray())
+    # print(data.toarray())
     return None
 
 def jieba_cutword():
@@ -62,11 +65,14 @@ def jieba_cutword():
     :return:
     """
     import jieba
-    con1 = jieba.cut("今天很残酷，明天更残酷，后天很美好，但绝对大部分是死在明天晚上，所以每个人不要放弃今天。")
+    con1 = jieba.cut("今天很残酷，明天更残酷，后天很美好，"
+                     "但绝对大部分是死在明天晚上，所以每个人不要放弃今天。")
 
-    con2 = jieba.cut("我们看到的从很远星系来的光是在几百万年之前发出的，这样当我们看到宇宙时，我们是在看它的过去。")
+    con2 = jieba.cut("我们看到的从很远星系来的光是在几百万年之前发出的，"
+                     "这样当我们看到宇宙时，我们是在看它的过去。")
 
-    con3 = jieba.cut("如果只用一种方式了解某样事物，你就不会真正了解它。了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。")
+    con3 = jieba.cut("如果只用一种方式了解某样事物，你就不会真正了解它。"
+                     "了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。")
 
     #转换成列表
     content1 = list(con1)
@@ -90,11 +96,13 @@ def countvec_chinese_jieba():
     #实例化CountVectorizer()
     cv = CountVectorizer()
     # 调用fit_transfrom输入并转换数据
+    a = [c1,c2,c3]
+    print(a)
     data = cv.fit_transform([c1,c2,c3])
     # 获取数据特征值
     # print(cv.get_feature_names())
     # 转换后的数据
-    print(data.toarray())
+    # print(data.toarray())
     return None
 
 def tfidf_countvec_chinese_jieba():
@@ -208,7 +216,7 @@ if __name__=="__main__":
           特征值化是为了计算机更好的去理解数据
     分类：字典特征抽取和文本特征抽取
     """
-    dictvec()
+    # dictvec()
     # countvec()
     # countvec_chinese()
     # jieba_cutword()
@@ -250,4 +258,4 @@ if __name__=="__main__":
     PCA，是数据维数压缩，尽可能降低原数据的维数（复杂度），损失少量信息。
     可以削减回归分析或者聚类分析中特征的数量
     """
-    # pca()
+    pca()

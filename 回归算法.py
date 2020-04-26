@@ -24,8 +24,8 @@ def linear_regression_boston():
     # 加载数据
     data_boston = load_boston()
     #分割数据
+    # x_train训练集特征值，x_test测试集特征值，y_train训练集目标值，y_test测试集目标值
     x_train,x_test,y_train,y_test = train_test_split(data_boston["data"],data_boston["target"],test_size=0.25)
-
     # 特征工程-标准化处理。特征值和目标值都需要标准化
     # 特征值标准化
     standard_x = StandardScaler()
@@ -59,10 +59,10 @@ def linear_regression_boston():
     plt.legend(["真实值","预测值"])
     plt.show()
 
-    #模型保存
-    joblib.dump(lr_model,"./re.pkl")
-
-    #测试保存的模型
+    # # 模型保存
+    # joblib.dump(lr_model,"./re.pkl")
+    #
+    # # 测试保存的模型
     # model = joblib.load("./re.pkl")
     # predict_result = standard_y.inverse_transform(model.predict(x_test))
     # print(predict_result)
@@ -110,7 +110,7 @@ def SGDRegressor_boston():
     print("特征系数为：\n",sgd_model.coef_)
 
     #预估房价
-    print("预估的房价为：\n",standard_y.inverse_transform(sgd_model.predict(x_test)))
+    print("预估的房价为：\n",standard_y.inverse_transform(sgd_model.predict(x_test))[:2])
     print("预测的分数为：\n",sgd_model.score(x_test,y_test))
     print("均方误差为：\n",mean_squared_error(standard_y.inverse_transform(y_test),
                                         standard_y.inverse_transform(sgd_model.predict(x_test))))
@@ -128,7 +128,7 @@ def SGDRegressor_boston():
     plt.show()
 
     #模型保存
-    joblib.dump(sgd_model,"./sgd.pkl")
+    # joblib.dump(sgd_model,"./sgd.pkl")
 
     #测试保存的模型
     # model = joblib.load("./sgd.pkl")
@@ -166,7 +166,7 @@ def ridge():
     ridge_model.fit(x_train,y_train)
 
     #预测房价
-    print("预测的房价为：", standard_y.inverse_transform(ridge_model.predict(x_test)))
+    print("预测的房价为：", standard_y.inverse_transform(ridge_model.predict(x_test))[:3])
     print("预测评分为：",ridge_model.score(x_test,y_test))
     print("均方误差为：",mean_squared_error(standard_y.inverse_transform(y_test),standard_y.inverse_transform(ridge_model.predict(x_test))))
 

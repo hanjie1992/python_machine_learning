@@ -49,25 +49,35 @@ print("DataFrame的对象值：\n", df2.values)
 print("DataFrame取头几行，默认前5行：\n", df2.head(2))
 print("DataFrame显示尾几行，默认5行：\n", df2.tail(2))
 # print("DataFrame详细信息：",df.info())
-print("DataFrame快速查看统计结果,计数、均值、标准差、最大值等：\n", df2.describe())
+print("DataFrame快速查看统计结果,"
+      "计数、均值、标准差、最大值等：\n", df2.describe())
 
 # 2.4 pandas读取外部数据
 dog_df = pd.read_csv("../data/dogNames2.csv")
-print(dog_df[(800 < dog_df["Count_AnimalName"]) | (dog_df["Count_AnimalName"] < 1000)])
+print(dog_df[(800 < dog_df["Count_AnimalName"])
+             | (dog_df["Count_AnimalName"] < 1000)])
 
 # 2.5 DataFrame排序
-dog_sorted_df = dog_df.sort_values(by="Count_AnimalName", ascending=False)
+dog_sorted_df = dog_df\
+        .sort_values(by="Count_AnimalName", ascending=False)
 print("前10个最受欢迎的名字：", dog_sorted_df.head(10))
 print("前20个名字最受欢迎的名字：", dog_sorted_df[:20])
-print("Count_AnimalName这一列的前20：", dog_sorted_df[:20]["Count_AnimalName"])
+print("Count_AnimalName这一列的前20：",
+        dog_sorted_df[:20]["Count_AnimalName"])
 
 # 2.6 pandas loc()通过标签获取行数据
 print(df2)
-print("获取df2中A行W列的数据：", df2.loc["A", "W"])
-print("获取df2中A行且 W列、Z列的数据：", df2.loc["A", ["W", "Z"]])
-print("获取df2中A行、C行 且 W列、Z列的数据：", df2.loc[["A", "C"], ["W", "Z"]])
-print("获取df2中A行以后，且W列、Z列的数据：", df2.loc["A":, ["W", "Z"]])
-print("获取df2中A行到C行，且W列、Z列的数据：", df2.loc["A":"C", ["W", "Z"]])  # 冒号在loc里面是闭合的
+# 冒号在loc里面是闭合的
+print("获取df2中A行W列的数据：",
+        df2.loc["A", "W"])
+print("获取df2中A行且 W列、Z列的数据：",
+            df2.loc["A", ["W", "Z"]])
+print("获取df2中A行、C行 且 W列、Z列的数据：",
+            df2.loc[["A", "C"], ["W", "Z"]])
+print("获取df2中A行以后，且W列、Z列的数据：",
+            df2.loc["A":, ["W", "Z"]])
+print("获取df2中A行到C行，且W列、Z列的数据：",
+            df2.loc["A":"C", ["W", "Z"]])
 
 # 2.7 panddas iloc()通过位置获取行数据
 print(df2)
@@ -79,10 +89,12 @@ df2.iloc[1:2, 0:2] = 200
 print("赋值更改数据：\n", df2)
 
 # 2.8 pandas之布尔索引
-print("使用次数超过800的狗的名字：\n", dog_df[dog_df["Count_AnimalName"] > 800])
+print("使用次数超过800的狗的名字：\n",
+      dog_df[dog_df["Count_AnimalName"] > 800])
 #
 print("使用次数超过700并且名字的字符串的长度大于4的狗的名字：\n",
-      dog_df[(dog_df["Row_Labels"].str.len() > 4) & (dog_df["Count_AnimalName"] > 700)])
+      dog_df[(dog_df["Row_Labels"].str.len() > 4)
+             & (dog_df["Count_AnimalName"] > 700)])
 
 # 3.pandas 缺失值处理
 df3 = pd.DataFrame(np.arange(12).reshape(3, 4))
@@ -110,34 +122,49 @@ movie_df = pd.read_csv("../data/IMDB-Movie-Data.csv")
 print(df.head())
 print(df.columns)
 print("电影平均分为：", movie_df["Rating"].mean())
-print("电影时长最大最小值：", movie_df["Runtime (Minutes)"].max(), movie_df["Runtime (Minutes)"].min())
+print("电影时长最大最小值：",
+      movie_df["Runtime (Minutes)"].max(),
+      movie_df["Runtime (Minutes)"].min())
 
 # 5.pandas 数据合并
 # 5.1 join:默认情况下他是把行索引相同的数据合并到一起
-# 创建3行4列，数值都为1的DataFrame，行索引为英文字母前3个,列索引为默认值
-t1 = pd.DataFrame(np.ones(shape=(3, 4)), index=list(string.ascii_uppercase[:3]))
-# 创建2行5列的，数值都为0的DataFrame。行索引为正数前2个英文字母，列索引为倒数后五个英文字母
-t2 = pd.DataFrame(np.zeros(shape=(2, 5)), index=list(string.ascii_uppercase[:2]),
+# 创建3行4列，数值都为1的DataFrame，
+# 行索引为英文字母前3个,列索引为默认值
+t1 = pd.DataFrame(np.ones(shape=(3, 4)),
+                  index=list(string.ascii_uppercase[:3]))
+# 创建2行5列的，数值都为0的DataFrame。
+# 行索引为正数前2个英文字母，列索引为倒数后五个英文字母
+t2 = pd.DataFrame(np.zeros(shape=(2, 5)),
+                  index=list(string.ascii_uppercase[:2]),
                   columns=list(string.ascii_uppercase[-5:]))
 print("t1 join t2的值为：\n",t1.join(t2))
-#5.2 merge按照指定的列把数据按照一定的方式合并到一起,默认的合并方式inner，交集
+
+#5.2 merge按照指定的列把数据按照一定的方式
+# 合并到一起,默认的合并方式inner，交集
 # merge outer，并集，NaN补全
 # merge left，左边为准，NaN补全
 # merge right，右边为准，NaN补全
-t3 = pd.DataFrame([[1,1,"a",1],[1,1,"b",1],[1,1,"c",1]],index=["A","B","C"],columns=["M","N","O","P"])
+t3 = pd.DataFrame([[1,1,"a",1],[1,1,"b",1],[1,1,"c",1]],
+                  index=["A","B","C"],columns=["M","N","O","P"])
 print("t3:\n",t3)
-t4 = pd.DataFrame([[0,0,"c",0,0],[0,0,"d",0,0]],index=["A","B"],columns=["V","W","X","Y","Z"])
+t4 = pd.DataFrame([[0,0,"c",0,0],[0,0,"d",0,0]],
+                  index=["A","B"],columns=["V","W","X","Y","Z"])
 print("t4：\n",t4)
 print("t3.merge(t4)的结果为：\n",t3.merge(t4,left_on="O",right_on="X"))
-print("t3.merge(t4),how='inner'的结果为：\n",t3.merge(t4,left_on="O",right_on="X",how="inner"))
-print("t3.merge(t4),how='outer'的的结果为：\n",t3.merge(t4,left_on="O",right_on="X",how="outer"))
-print("t3.merge(t4),how='left'的的结果为：\n",t3.merge(t4,left_on="O",right_on="X",how="left"))
-print("t3.merge(t4),how='right'的的结果为：\n",t3.merge(t4,left_on="O",right_on="X",how="right"))
+print("t3.merge(t4),how='inner'的结果为：\n",
+      t3.merge(t4,left_on="O",right_on="X",how="inner"))
+print("t3.merge(t4),how='outer'的的结果为：\n",
+      t3.merge(t4,left_on="O",right_on="X",how="outer"))
+print("t3.merge(t4),how='left'的的结果为：\n",
+      t3.merge(t4,left_on="O",right_on="X",how="left"))
+print("t3.merge(t4),how='right'的的结果为：\n",
+      t3.merge(t4,left_on="O",right_on="X",how="right"))
 
 #6 pandas 分组和聚合
 """
-现在我们有一组关于全球星巴克店铺的统计数据，如果我想知道美国的星巴克数量和中国的哪个多，
-或者我想知道中国每个省份星巴克的数量的情况，那么应该怎么办？
+现在我们有一组关于全球星巴克店铺的统计数据，如果
+我想知道美国的星巴克数量和中国的哪个多，或者我想
+知道中国每个省份星巴克的数量的情况，那么应该怎么办？
 语法：
 grouped = df.groupby(by="columns_name") grouped是一个DataFrameGroupBy对象，是可迭代的。
 """
@@ -154,7 +181,9 @@ grouped = china_data.groupby(by="State/Province").count()["Brand"]
 print(grouped)
 
 # 6.3统计每个国家每个省店铺的数量，数据按照多个条件进行分组，返回Series
-grouped = starbucks_df.groupby(by=[starbucks_df["Country"],starbucks_df["State/Province"]]).count()["Brand"]
+grouped = starbucks_df.groupby(
+    by=[starbucks_df["Country"],
+        starbucks_df["State/Province"]]).count()["Brand"]
 print(grouped)
 
 #7 pandas 时间序列
@@ -176,8 +205,9 @@ print("时间序列应用于DataFrame：",df)
 
 #8 空气质量问题
 """
-现在我们有北上广、深圳、和沈阳5个城市空气质量数据，请绘制出5个城市的PM2.5随时间的变化情况
-观察这组数据中的时间结构，并不是字符串，这个时候我们应该怎么办？
+现在我们有北上广、深圳、和沈阳5个城市空气质量数据，
+请绘制出5个城市的PM2.5随时间的变化情况观察这组数据
+中的时间结构，并不是字符串，这个时候我们应该怎么办？
 """
 import matplotlib.pyplot as plt
 
@@ -185,7 +215,11 @@ file_path = "../data/BeijingPM20100101_20151231.csv"
 df =pd.read_csv(file_path)
 
 #把分开的时间字符串通过periodIndex的方法转化为pandas的时间类型
-period = pd.PeriodIndex(year=df["year"],month=df["month"],day=df["day"],hour=df["hour"],freq="H")
+period = pd.PeriodIndex(year=df["year"],
+                        month=df["month"],
+                        day=df["day"],
+                        hour=df["hour"],
+                        freq="H")
 df["datetime"]=period
 #把datetime设置为索引
 df.set_index("datetime",inplace=True)
