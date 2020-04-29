@@ -347,7 +347,7 @@ if __name__ == "__main__":
     """
     # naive_bayes()
     knn_breast_cancer()
-    # knn_iris()
+    # knn_iris()kn
 
     """
     分类算法3：决策树。思想很简单就是if else
