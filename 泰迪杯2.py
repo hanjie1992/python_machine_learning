@@ -82,6 +82,44 @@ def hot_mining():
     print(sparse_result.todense())
     pass
 
+
+def hot_mining2():
+    """
+     2、热点问题挖掘
+    某一时段内群众集中反映的某一问题可称为热点问题，如“XXX 小区多位业主多次反映
+    入夏以来小区楼下烧烤店深夜经营导致噪音和油烟扰民”。及时发现热点问题，有助于相关
+    部门进行有针对性地处理，提升服务效率。请根据附件 3 将某一时段内反映特定地点或特定
+    人群问题的留言进行归类，定义合理的热度评价指标，并给出评价结果，按表 1 的格式给出
+    排名前 5 的热点问题，并保存为文件“热点问题表.xls”。按表 2 的格式给出相应热点问题
+    对应的留言信息，并保存为“热点问题留言明细表.xls”。
+    :return:
+    """
+    import matplotlib.pyplot as plt
+    from wordcloud import WordCloud
+    # 获取目标值数据、特征值数据文件
+    data_message = pd.read_excel("../data/3.xlsx")
+    # 特征值数据
+    document = data_message["留言主题"].values.tolist()
+    # sent_words = [list(jieba.cut(sent)) for sent in document]
+    # document = []
+    # for sent in sent_words:
+    #     for x in sent:
+    #         document.append(x)
+    # document = [" ".join(sent) for sent in sent_words]
+    result = pd.DataFrame(document,columns=["word"])
+    frequencies = result.groupby(by = ['word'])["word"].count()
+    frequencies = frequencies.sort_values(ascending=False)
+    backgroud_Image = plt.imread('../data/pl.jpg')
+    wordcloud = WordCloud(font_path="G:/workspace/font/STZHONGS.ttf",
+                          max_words=20,
+                          background_color='white',
+                          mask=backgroud_Image)
+    my_wordcloud = wordcloud.fit_words(frequencies)
+    plt.imshow(my_wordcloud)
+    plt.axis('off')
+    plt.show()
+    pass
+
 def evaluation_scheme():
     """
     3、答复意见的评价
@@ -100,5 +138,6 @@ def evaluation_scheme():
 if __name__=="__main__":
     # message_classification()
     # hot_mining()
-    evaluation_scheme()
+    hot_mining2()
+    # evaluation_scheme()
     pass
