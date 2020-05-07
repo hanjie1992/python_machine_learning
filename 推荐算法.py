@@ -21,7 +21,7 @@ def apriori():
     te = TransactionEncoder()
     #进行one-hot编码
     te_ary = te.fit(data_set).transform(data_set)
-    print(type(te_ary))
+    # print(type(te_ary))
     df = pd.DataFrame(te_ary,columns=te.columns_)
     #利用apriori找出频繁项集
     freq = apriori(df,min_support=0.4,use_colnames=True)
@@ -64,10 +64,9 @@ if __name__=="__main__":
             {牛奶}=3次
             confidence{牛奶,鸡蛋} = 2/3
             购买牛奶的顾客中，有2/3的顾客会购买鸡蛋
-        提升度：置信度(A->B)/(支持度A)。
+        提升度：置信度(A->B)/(支持度B)。
              {牛奶，鸡蛋}的置信度为：2/3
-             牛奶的支持度为：3/5
-             提升度为：(2/3)/(3/5)=1.11
-             说明牛奶卖的越多，鸡蛋也会增多
+             牛奶的支持度为：4/5
+             提升度为：(2/3)/(4/5)=0.83
     """
     apriori()
