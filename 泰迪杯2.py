@@ -106,18 +106,24 @@ def hot_mining2():
     #     for x in sent:
     #         document.append(x)
     # document = [" ".join(sent) for sent in sent_words]
-    result = pd.DataFrame(document,columns=["word"])
-    frequencies = result.groupby(by = ['word'])["word"].count()
+    result = pd.DataFrame(document,columns=["留言主题"])
+    frequencies = result.groupby(by = ['留言主题'])["留言主题"].count()
     frequencies = frequencies.sort_values(ascending=False)
-    backgroud_Image = plt.imread('../data/pl.jpg')
-    wordcloud = WordCloud(font_path="G:/workspace/font/STZHONGS.ttf",
-                          max_words=20,
-                          background_color='white',
-                          mask=backgroud_Image)
-    my_wordcloud = wordcloud.fit_words(frequencies)
-    plt.imshow(my_wordcloud)
-    plt.axis('off')
-    plt.show()
+    frequencies_dataframe = frequencies.to_frame()
+    # data_message = frequencies_dataframe.index.droplevel()
+    a = pd.merge(data_message,frequencies_dataframe,on=["留言主题"])
+    print(a)
+
+
+    # backgroud_Image = plt.imread('../data/pl.jpg')
+    # wordcloud = WordCloud(font_path="G:/workspace/font/STZHONGS.ttf",
+    #                       max_words=20,
+    #                       background_color='white',
+    #                       mask=backgroud_Image)
+    # my_wordcloud = wordcloud.fit_words(frequencies)
+    # plt.imshow(my_wordcloud)
+    # plt.axis('off')
+    # plt.show()
     pass
 
 def evaluation_scheme():
