@@ -13,7 +13,10 @@ data = data['id']
 description = [data.count(),data.min(), data.max()]  # 依次计算总数、最小值、最大值
 description = pd.DataFrame(description, index = ['Count','Min', 'Max']).T  # 将结果存入数据框
 print('描述性统计结果：\n',np.round(description))  # 输出结果
-
+"""
+打印可知：每列属性共有43367个观测值，并不存在缺失值。查看"id"属性的最大值和最小值，可知某个商品零售企业共收集了9835个
+购物篮数据，其中包含169个不同的商品类别，售出商品总数为43369件。
+"""
 
 
 # 代码8-2 分析热销商品
