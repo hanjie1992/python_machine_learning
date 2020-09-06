@@ -26,7 +26,7 @@ def gray_level():
     """
     import cv2
     img = cv2.imread("../data/lena.jpg")
-    cv2.imshow("BGR_IMG", img)
+    # cv2.imshow("BGR_IMG", img)
     # 将图片转化为灰度
     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # 展示图片
@@ -84,13 +84,18 @@ def out_face_detect_static():
     def face_detect_static():
         """
         静态人脸检测
+
+        调用opencv训练好的分类器和自带的检测函数检测人脸人眼等的步骤简单直接：
+        1.加载分类器，当然分类器事先要放在工程目录中去。分类器本来的位置是在*\opencv\sources\data\haarcascades（harr分类器，也有其他的可以用，也可以自己训练）
+        2.调用detectMultiScale()函数检测，调整函数的参数可以使检测结果更加精确。
+        3.把检测到的人脸等用矩形（或者圆形等其他图形）画出来。
         :return:
         """
         # 导包
         import cv2
         # 图片转化为灰度图片
         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # 加载特征数据
+        # 加载特征数据 CascadeClassifier级联分类器
         face_detector = cv2.CascadeClassifier(
             "C:/ProgramData/Anaconda3/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml")
         faces = face_detector.detectMultiScale(gray_image)
@@ -154,7 +159,7 @@ def video_face_detect():
 
     video_face = cv2.VideoCapture("G:/video.mp4")
     while True:
-        # read()方法返回视频中检测的对象，视频在播放flag为True,frame为当前帧上的图片
+        # read()方法返回视频中检测的对象，,视频在播放flag为True,frame为当前帧上的图片
         flag, frame = video_face.read()
         print("flag:", flag, "frame.shape:", frame.shape)
         if not flag:
@@ -193,7 +198,10 @@ def out_getImageAndLabels():
             "/haarcascade_frontalface_default.xml")
         # 遍历列表中的图片
         for imagePath in imagePaths:
-            # 打开图片
+            # 打开图片。convert()函数，用于不同模式图像之间的转换。
+            # PIL中有九种不同模式，分别为1，L，P，RGB，RGBA，CMYK，YCbCr，I，F。主要尝试1和L。
+            # 模式”1”为二值图像，非黑即白。但是它每个像素用8个bit表示，0表示黑，255表示白。
+            # 模式“L” 为灰色图像，它的每个像素用8个bit表示，0表示黑，255表示白，其他数字表示不同的灰度。
             PIL_img = Image.open(imagePath).convert("L")
             # 将图像转换我数组
             img_numpy = np.array(PIL_img, "uint8")
@@ -230,7 +238,7 @@ def match_face():
     recogizer = cv2.face.LBPHFaceRecognizer_create()
     recogizer.read("./trainer.yml")
     # 准备识别的图片
-    img = cv2.imread("../data/8.pgm")
+    img = cv2.imread("../data/jm/1.pgm")
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     face_detector = cv2.CascadeClassifier(
         "C:/ProgramData/Anaconda3/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml")
@@ -294,4 +302,4 @@ if __name__ == "__main__":
         并将其与模型中的对应单元进行比较， 对每个区域的匹配值产生一个直方图。
     """
     # out_getImageAndLabels()
-    # match_face()
+    match_face()

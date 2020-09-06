@@ -10,6 +10,8 @@ def apriori():
     import pandas as pd
     from mlxtend.preprocessing import TransactionEncoder
     from mlxtend.frequent_patterns import apriori
+    # 导入关联规则包
+    from mlxtend.frequent_patterns import association_rules
 
     #设置数据集
     data_set = [['牛奶','洋葱','肉豆蔻','芸豆','鸡蛋','酸奶'],
@@ -25,9 +27,6 @@ def apriori():
     df = pd.DataFrame(te_ary,columns=te.columns_)
     #利用apriori找出频繁项集
     freq = apriori(df,min_support=0.4,use_colnames=True)
-
-    #导入关联规则包
-    from mlxtend.frequent_patterns import association_rules
     #计算关联规则
     result = association_rules(freq,metric="confidence",min_threshold=0.6)
     # 排序
