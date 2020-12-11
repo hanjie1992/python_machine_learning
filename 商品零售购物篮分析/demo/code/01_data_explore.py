@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# 代码8-1 查看数据特征
+# 1 查看数据特征
 
 import numpy as np
 import pandas as pd
 
 inputfile = '../data/GoodsOrder.csv'   # 输入的数据文件
 data = pd.read_csv(inputfile,encoding = 'gbk')  # 读取数据
-data .info()  # 查看数据属性
+data.info()  # 查看数据属性
 
 data = data['id']
 description = [data.count(),data.min(), data.max()]  # 依次计算总数、最小值、最大值
@@ -19,7 +19,7 @@ print('描述性统计结果：\n',np.round(description))  # 输出结果
 """
 
 
-# 代码8-2 分析热销商品
+# 2 分析热销商品
 
 # 销量排行前10商品的销量及其占比
 import pandas as pd
@@ -44,13 +44,13 @@ plt.show()  # 展示图片
 
 # 销量排行前10商品的销量占比
 data_nums = data.shape[0]
-for idnex, row in sorted[:10].iterrows():
+for index, row in sorted[:10].iterrows():
     print(row['Goods'],row['id'],row['id']/data_nums)
 
 
 	
 	
-# 代码8-3 各类别商品的销量及其占比
+# 3 各类别商品的销量及其占比
 
 import pandas as pd
 inputfile1 = '../data/GoodsOrder.csv'
@@ -59,7 +59,7 @@ data = pd.read_csv(inputfile1,encoding = 'gbk')
 types = pd.read_csv(inputfile2,encoding = 'gbk')  # 读入数据
 
 group = data.groupby(['Goods']).count().reset_index()
-sort = group.sort_values('id',ascending = False).reset_index()
+sort = group.sort_values('id',ascending = False).reset_index()  # 降序
 data_nums = data.shape[0]  # 总量
 del sort['index']
 
@@ -89,7 +89,7 @@ plt.show()
 
 
 
-# 代码8-4 非酒精饮料内部商品的销量及其占比
+# 4 非酒精饮料内部商品的销量及其占比
 
 # 先筛选“非酒精饮料”类型的商品，然后求百分比，然后输出结果到文件。
 selected = sort_links.loc[sort_links['Types'] == '非酒精饮料']  # 挑选商品类别为“非酒精饮料”并排序
@@ -107,7 +107,7 @@ labels = selected['Goods']
 plt.figure(figsize = (8,6))  # 设置画布大小 
 explode = (0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.08,0.3,0.1,0.3)  # 设置每一块分割出的间隙大小
 plt.pie(data,explode = explode,labels = labels,autopct = '%1.2f%%',
-        pctdistance = 1.1,labeldistance = 1.2)
+        pctdistance = 0.9,labeldistance = 1.2)
 plt.rcParams['font.sans-serif'] = 'SimHei'
 plt.title("非酒精饮料内部各商品的销量占比")  # 设置标题
 plt.axis('equal')

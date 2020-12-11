@@ -216,7 +216,7 @@ if __name__=="__main__":
           特征值化是为了计算机更好的去理解数据
     分类：字典特征抽取和文本特征抽取
     """
-    # dictvec()
+    dictvec()
     # countvec()
     # countvec_chinese()
     # jieba_cutword()
@@ -258,4 +258,4 @@ if __name__=="__main__":
     PCA，是数据维数压缩，尽可能降低原数据的维数（复杂度），损失少量信息。
     可以削减回归分析或者聚类分析中特征的数量
     """
-    pca()
+    # pca()

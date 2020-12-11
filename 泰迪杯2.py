@@ -20,13 +20,16 @@ def message_classification():
     :return:
     """
     # 获取目标值数据、特征值数据文件
-    data_message = pd.read_excel("../data/2.xlsx")
+    data_message2 = pd.read_excel("../data/2test.xlsx")
+    data_message1 = pd.read_excel("../data/2.xlsx")
     # 去除留言详情列空格，制表符
-    data_message["留言详情"] = data_message["留言详情"].apply(lambda x: x.replace('\n', '').replace('\t', ''))
+    data_message1["留言详情"] = data_message1["留言详情"].apply(lambda x: x.replace('\n', '').replace('\t', ''))
+    data_message2["留言详情"] = data_message2["留言详情"].apply(lambda x: x.replace('\n', '').replace('\t', ''))
     # 特征值数据
-    data = data_message["留言详情"].values.tolist()
-    # 目标值数据
-    target = data_message["一级标签"].values.tolist()
+    data = data_message1["留言详情"]
+    data2 = data_message2["留言详情"]
+      # 目标值数据
+    target = data_message1["一级标签"].values.tolist()
     # 拆分数据集
     x_train, x_test, y_train, y_test = train_test_split(data, target, test_size=0.25)
     # 实例化CountVectorizer()。CountVectorizer会将文本中的词语转换为词频矩阵，
@@ -34,21 +37,25 @@ def message_classification():
     vectorizer = CountVectorizer()
     # 调用fit_transfrom输入并转换数据
     words = vectorizer.fit_transform(x_train)
-    test_word = vectorizer.transform(x_test)
+    test_word = vectorizer.transform(data2)
     # 实例化多项式分布的朴素贝叶斯
     clf_model = MultinomialNB().fit(words, y_train)
     predicted = clf_model.predict(test_word)
+    df = pd.DataFrame(predicted, columns=['一级标签'])
+    df.to_excel("./a.xlsx",index=False)
+    print("===",predicted)
     # for doc, category in zip(x_test, predicted):
     #     print(doc, ":", category)
     # print("每个类别的精确率和召回率：\n", classification_report(y_test, predicted))
-    f1 = cross_val_score(clf_model, words, y_train,scoring="f1_weighted", cv=5)
+    f1 = cross_val_score(clf_model, words, y_train, scoring="f1_weighted", cv=5)
     print("F1 score: " + str(round(100 * f1.mean(), 2)) + "%")
     # 模型保存
-    # joblib.dump(clf_model,"./clf_model.pkl")
-
-    # 测试保存的模型
+    # joblib.dump(clf_model, "./clf_model.pkl")
+    #
+    # # # 测试保存的模型
     # model = joblib.load("./clf_model.pkl")
-    # predict_result = standard_y.inverse_transform(model.predict(x_test))
+    # # predict_result = standard_y.inverse_transform(model.predict(x_test))
+    # predict_result = model.predict(data)
     # print(predict_result)
     pass
 
@@ -142,8 +149,8 @@ def evaluation_scheme():
     pass
 
 if __name__=="__main__":
-    # message_classification()
+    message_classification()
     # hot_mining()
-    hot_mining2()
+    # hot_mining2()
     # evaluation_scheme()
     pass

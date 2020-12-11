@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# 代码8-5 数据转换
+# 5 数据转换
 
 import pandas as pd
 inputfile='../data/GoodsOrder.csv'

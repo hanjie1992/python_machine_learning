@@ -197,12 +197,12 @@ def hist_graph():
     return None
 
 if __name__ == "__main__":
-    # demo1()
+    demo1()
     # demo2()
     # demo_temperature()
     # scatter_graph()
     # bar_graph()
     # bar_graph_2()
-    hist_graph()
+    # hist_graph()
     pass
 
