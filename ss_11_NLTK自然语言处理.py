@@ -17,7 +17,7 @@ NLTK配套有文档，有语料库，有书籍。
 报刊杂志上出现过的语句段落等等在现实生活中真实出现过的语言材料
 整理在一起，形du成一个语料库，以便做科学研究的时候能够从中取材或者得到数据佐证。
 """
-def ss_nltk():
+def nltk_brown():
     # 1.查看语料库
     #引用布朗大学的语料库
     from nltk.corpus import brown # 需要下载brown语料库
@@ -27,8 +27,9 @@ def ss_nltk():
     print('共有{}个句子'.format(len(brown.sents())))
     print('共有{}个单词'.format(len(brown.words())))
 
-    # 2.NLTK词条化(分词 (tokenize))
+def nltk_tokenize():
     """
+     1.实验实现词条化
     将句子拆分成具有语言语义学上意义的词
     中、英文分词区别：
         英文中，单词之间是以空格作为自然分界符的
@@ -41,65 +42,97 @@ def ss_nltk():
     nltk.word_tokenize(sentence) #分词 
     nltk的分词是句子级别的，所以对于一篇文档首先要将文章按句子进行分割，然后句子进行分词
     """
-    text = "Are you curious about tokenization? Let's see how it works! " \
-           "We need to analyze a couple of sentences with punctuations to see it in action."
+    # 1）创建一个text字符串，作为样例的文本：
+    text = "Are you curious about tokenization?" \
+           " Let's see how it works! We need to " \
+           "analyze a couple of sentences with " \
+           "punctuations to see it in action."
+    # 2）加载NLTK模块：
     from nltk.tokenize import sent_tokenize
+    """
+     3）调用NLTK模块的sent_tokenize()方法，对text文本进行词条化，
+    sent_tokenize()方法是以句子为分割单位的词条化方法：
+    """
     sent_tokenize_list = sent_tokenize(text)
+    # 4）输出结果：
+    print("\nSentence tokenizer:")
     print(sent_tokenize_list)
-
-
     """
-    词形问题
-    look, looked, looking
-    影响语料学习的准确度
-    词形归一化
+     5）调用NLTK模块的word_tokenize()方法，对text文本进行词条化，
+    word_tokenize()方法是以单词为分割单位的词条化方法：
     """
-    #3.词干提取(stemming)
+    from nltk.tokenize import word_tokenize
+    print("\nWord tokenizer:")
+    print(word_tokenize(text))
+    """
+    6）最后一种单词的词条化方法是WordPunctTokenizer()，
+     使用这种方法我们将会把标点作为保留对象。
+    """
+    # from nltk.tokenize import WordPunctTokenizer
+    # word_punct_tokenizer = WordPunctTokenizer()
+    # print("\nWord punct tokenizer:")
+    # print(word_punct_tokenizer.tokenize(text))
+    pass
+
+def nltk_stemming():
+    """2.实验实现词干还原"""
+    # （1）导入词干还原相关的包：
     from nltk.stem.porter import PorterStemmer
     from nltk.stem.lancaster import LancasterStemmer
     from nltk.stem.snowball import SnowballStemmer
-
+    # （2）创建样例：
+    words = ['table', 'probably', 'wolves', 'playing', 'is', 'dog',
+             'the', 'beaches', 'grounded', 'dreamt', 'envision']
+    # （3）调用NLTK模块中三种不同的词干还原方法：
     stemmer_porter = PorterStemmer()
     stemmer_lancaster = LancasterStemmer()
     stemmer_snowball = SnowballStemmer('english')
+    # （4）设置打印输出格式：多值参数
+    stemmers = ['PORTER', 'LANCASTER', 'SNOWBALL']
+    formatted_row = '{:>16}' * (len(stemmers) + 1)
+    print('\n', formatted_row.format('WORD', *stemmers), '\n')
+    # （5） 使用NLTK模块中词干还原方法对样例单词进行词干还原：
+    for word in words:
+        stemmed_words = [stemmer_porter.stem(word),
+                         stemmer_lancaster.stem(word),
+                         stemmer_snowball.stem(word)]
+        print(formatted_row.format(word, *stemmed_words))
+    pass
 
-    print(stemmer_porter.stem('looked'))
-    print(stemmer_porter.stem('looking'))
-    print(stemmer_porter.stem("words"))
+def nltk_lemmatization():
+    # 3.实验实现词型归并
+    # （1）导入NLTK中词型归并方法：
+    from nltk.stem import WordNetLemmatizer
+    # （2）创建样例：
+    words = ['table', 'probably', 'wolves', 'playing', 'is',
+             'dog', 'the', 'beaches', 'grounded', 'dreamt', 'envision']
+    # （3）调用NLTK模块的WordNetLemmatizer()方法：
+    lemmatizer_wordnet = WordNetLemmatizer()
+    # （4）设置打印输出格式：
+    lemmatizers = ['NOUN LEMMATIZER', 'VERB LEMMATIZER']
+    formatted_row = '{:>24}' * (len(lemmatizers) + 1)
+    print('\n', formatted_row.format('WORD', *lemmatizers), '\n')
+    # （5）使用NLTK模块中词型归并方法对样例单词进行词型归并：
+    for word in words:
+        lemmatized_words = [lemmatizer_wordnet.lemmatize(word, pos='n'),
+                            lemmatizer_wordnet.lemmatize(word, pos='v')]
+        print(formatted_row.format(word, *lemmatized_words))
+    pass
 
-    # 4.NLTK词形归并(lemmatization)
-    """
-    stemming，词干提取，如将ing, ed去掉，只保留单词主干
-    lemmatization，词形归并，将单词的各种词形归并成一种形式，
-    如am, is, are -> be, went->go
-    NLTK中的stemmer --> PorterStemmer, SnowballStemmer, LancasterStemmer
-    NLTK中的lemma --> WordNetLemmatizer
-    指明词性可以更准确地进行lemma
-    """
-    from nltk.stem import WordNetLemmatizer # 需要下载wordnet语料库
-
-    wordnet_lematizer = WordNetLemmatizer()
-    print(wordnet_lematizer.lemmatize('cats'))
-    print(wordnet_lematizer.lemmatize('boxes'))
-    print(wordnet_lematizer.lemmatize('are'))
-    print(wordnet_lematizer.lemmatize('went'))
-
-    # 指明词性可以更准确地进行lemma
-    # lemmatize 默认为名词
-    print(wordnet_lematizer.lemmatize('are', pos='v'))
-    print(wordnet_lematizer.lemmatize('went', pos='v'))
-
-    # 5.词性标注 (Part-Of-Speech) nltk.word_tokenize()
+def nltk_POS():
+    # 4.词性标注 (Part-Of-Speech) nltk.word_tokenize()
     import nltk
     words = nltk.word_tokenize('Python is a widely used programming language.')
     print(nltk.pos_tag(words))  # 需要下载 averaged_perceptron_tagger
+    pass
 
+def nltk_stop_words():
     # 6.NLTK的Stopwords,去除停用词
     """
     去除停用词
     为节省存储空间和提高搜索效率，NLP中会自动过滤掉某些字或词
     停用词都是人工输入、非自动化生成的，形成停用词表
-    
+
     使用NLTK去除停用词
         stopwords.words()
     分类
@@ -114,12 +147,14 @@ def ss_nltk():
         http://www.ranks.nl/stopwords
     """
     from nltk.corpus import stopwords  # 需要下载stopwords
+    words = nltk.word_tokenize('Python is a widely used programming language.')
     filtered_words = [word for word in words if word not in stopwords.words('english')]
     print('原始词：', words)
     print('去除停用词后：', filtered_words)
+    pass
 
 # 典型的文本预处理流程
-def ss_nltk2():
+def nltk_demo():
     import nltk
     from nltk.stem import WordNetLemmatizer
     from nltk.corpus import stopwords
@@ -137,118 +172,161 @@ def ss_nltk2():
     print('原始文本：', raw_text)
     print('预处理结果：', filtered_words)
 
-def countvec():
+def nltk_tfidf():
     """
-    英文文本特征抽取：对文本数据进行特征值化
-    :return:
+
+    创建文本分类器目的是将文档集中的多个文本文档划分为不同的类别，
+    文本分类在自然语言处理中是很重要的一种分析手段，
+    为实现文本的分类，我们将使用另一种统计数据方法tf-idf
+    （词频-逆文档频率）， tf-idf方法与基于单词出现频率的
+    统计方法一样，都是将一个文档数据转化为数值型数据的一种方法。
     """
-    #导入包
+    # （1）导入相关的包：
+    from sklearn.datasets import fetch_20newsgroups
+    # （2） 创建字典，定义分类类型的列表：
+    category_map = {'misc.forsale': 'Sales', 'rec.motorcycles': 'Motorcycles',
+                    'rec.sport.baseball': 'Baseball', 'sci.crypt': 'Cryptography', 'sci.space': 'Space'}
+    # （3）加载训练数据：
+    training_data = fetch_20newsgroups(subset='train',
+                                       categories=category_map.keys(), shuffle=True, random_state=7)
+    # （4） 特征提取：
     from sklearn.feature_extraction.text import CountVectorizer
-    #实例化CountVectorizer()
-    vector = CountVectorizer()
-    #调用fit_transform输入并转换数据
-    res = vector.fit_transform(["life is short,i like python",
-                                "life is too long,i dislike python"])
-    # 获取特征值
-    print(vector.get_feature_names())
-    # 转换后的数据
-    print(res.toarray())
-    return None
+    vectorizer = CountVectorizer()
+    X_train_termcounts = vectorizer.fit_transform(training_data.data)
+    print("\nDimensions of training data:", X_train_termcounts.shape)
+    # （5）训练分类器模型：
+    from sklearn.naive_bayes import MultinomialNB
+    from sklearn.feature_extraction.text import TfidfTransformer
+    # （6）创建随即样例：
+    input_data = [
+        "The curveballs of right handed pitchers tend to curve to the left",
+        "Caesar cipher is an ancient form of encryption",
+        "This two-wheeler is really good on slippery roads"]
+    # （7）使用tf-idf 算法实现数值型数据的转化以及训练：
+    tfidf_transformer = TfidfTransformer()
+    X_train_tfidf = tfidf_transformer.fit_transform(X_train_termcounts)
+    classifier = MultinomialNB().fit(X_train_tfidf, training_data.target)
+    # （8）词频于tf-idf作为输入的对比：
+    X_input_termcounts = vectorizer.transform(input_data)
+    X_input_tfidf = tfidf_transformer.transform(X_input_termcounts)
+    # （9）打印输出结果：
+    predicted_categories = classifier.predict(X_input_tfidf)
+    for sentence, category in zip(input_data, predicted_categories):
+        print('\nInput:', sentence, '\nPredicted category:', category_map[training_data.target_names[category]])
+    pass
 
-def countvec_chinese():
+def nltk_NB():
     """
-    中文文本特征抽取：
-    存在问题：对中文分词有误
-    解决办法：使用jieba分词
-    :return:
+    在自然语言处理中通过姓名识别性别是一项有趣的事情。
+    我们算法是通过名字中的最后几个字符以确定其性别。例如，
+    如果名字中的最后几个字符是“la”，它很可能是一名女性的名字，
+    如“Angela”或“Layla”。相反的，如果名字中的最后几个字符是“im”，
+    最有可能的是男性名字，比如“Tim”或“Jim”。
     """
-    from sklearn.feature_extraction.text import CountVectorizer
-    #实例化CountVectorizer()
-    vector = CountVectorizer()
-    #调用fit_transfrom输入并转换数据
-    # data = vector.fit_transform(
-    # ["人生苦短，我用python","人生漫长，不用python"])
-    data = vector.fit_transform(
-        ["人生苦短，我喜欢python","人生漫长，不用python"])
-    #获取数据特征值
-    print(vector.get_feature_names())
-    #转换后的数据
-    print(data.toarray())
-    return None
+    # （1）导入相关包：
+    import random
+    from nltk.corpus import names
+    from nltk import NaiveBayesClassifier
+    from nltk.classify import accuracy as nltk_accuracy
+    # （2）定义函数获取性别：
+    def gender_features(word, num_letters=2):
+        return {'feature': word[-num_letters:].lower()}
 
-def jieba_cutword():
-    """
-    利用jieba.cut进行分词,返回词语生成器。
-    将分词结果变成字符串当作fit_transform的输入值
-    :return:
-    """
-    import jieba
-    con1 = jieba.cut("今天很残酷，明天更残酷，后天很美好，"
-                     "但绝对大部分是死在明天晚上，所以每个人不要放弃今天。")
+    # （3）定义main函数以及数据：
+    if __name__ == '__main__':
+        labeled_names = ([(name, 'male') for name in names.words('male.txt')] +
+                         [(name, 'female') for name in names.words('female.txt')])
+        random.seed(7)
+        random.shuffle(labeled_names)
+        input_names = ['Leonardo', 'Amy', 'Sam']
+        # （6）获取末尾字符：
+        for i in range(1, 5):
+            print('\nNumber of letters:', i)
+        featuresets = [(gender_features(n, i), gender) for (n, gender) in labeled_names]
+        # （7）划分训练数据和测试数据：
+        train_set, test_set = featuresets[500:], featuresets[:500]
+        # （8）分类实现：
+        classifier = NaiveBayesClassifier.train(train_set)
+        # （9）评测分类效果：
+        print('Accuracy ==>', str(100 * nltk_accuracy(classifier, test_set)) + str('%'))
+        for name in input_names:
+            print(name, '==>', classifier.classify(gender_features(name, i)))
+    pass
 
-    con2 = jieba.cut("我们看到的从很远星系来的光是在几百万年之前发出的，"
-                     "这样当我们看到宇宙时，我们是在看它的过去。")
-
-    con3 = jieba.cut("如果只用一种方式了解某样事物，你就不会真正了解它。"
-                     "了解事物真正含义的秘密取决于如何将其与我们所了解的事物相联系。")
-
-    #转换成列表
-    content1 = list(con1)
-    content2 = list(con2)
-    content3 = list(con3)
-    print(content1)
-    #列表转字符串
-    c1 = ' '.join(content1)
-    c2 = ' '.join(content2)
-    c3 = ' '.join(content3)
-    return c1,c2,c3
-
-def countvec_chinese_jieba():
+def nltk_sentiment_analysis():
     """
-    使用jieba分词对中文进行分词
-    :return:
+    情感分析的实现：
+    本文中我们使用NLTK模块中的朴素贝叶斯分类器来实现文档的分类。
+    在特征提取函数中，我们提取了所有的词。但是，在此我们注意到
+    NLTK分类器的输入数据格式为字典格式，因此，我们下文中创建了
+    字典格式的数据，以便我们的NLTK分类器可以使用这些数据。同时，
+    在创建完字典型数据后，我们将数据分成训练数据集和测试数据集，
+    我们的目的是使用训练数据训练我们的分类器，以便分类器可以将
+    数据分为积极与消极。而当我们查看哪些单词包含的信息量最大，
+    也就是最能体现其情感的单词的时候，我们会发现有些单词例如，
+    “outstanding”表示积极情感，“insulting”表示消极情感。这是
+    非常有意义的信息，因为它告诉我们什么单词被用来表明积极。
     """
-    from sklearn.feature_extraction.text import CountVectorizer
-    c1,c2,c3 = jieba_cutword()
-    # print(c1,c2,c3)
-    #实例化CountVectorizer()
-    cv = CountVectorizer()
-    # 调用fit_transfrom输入并转换数据
-    a = [c1,c2,c3]
-    print(a)
-    data = cv.fit_transform([c1,c2,c3])
-    # 获取数据特征值
-    print(cv.get_feature_names())
-    # 转换后的数据
-    print(data.toarray())
-    return None
+    # （1）导入相关包：
+    import nltk.classify.util
+    from nltk.classify import NaiveBayesClassifier
+    from nltk.corpus import movie_reviews
+    # （2） 定义函数获取情感数据：
+    def extract_features(word_list):
+        return dict([(word, True) for word in word_list])
 
-def tfidf_countvec_chinese_jieba():
-    """
-    TF-IDF-文本词语占比分析:
-    TF-IDF的主要思想是：如果某个词或短语在一篇文章中出现的概率高，并且在其他文章中很少出现，
-    则认为此词或者短语具有很好的类别区分能力，适合用来分类。
-    :return:
-    """
-    #导包
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    #字符串
-    c1,c2,c3 = jieba_cutword()
-    #实例化TF-IDF
-    tf = TfidfVectorizer()
-    #调用fit_transform()输入并转换数据
-    data = tf.fit_transform([c1,c2,c3])
-    #获取数据特征值
-    print(tf.get_feature_names())
-    #转换后的数据
-    print(data.toarray())
-    return None
+    # （3）加载数据，在这里为了方便教学我们使用NLTK自带数据：
+    if __name__ == '__main__':
+        positive_fileids = movie_reviews.fileids('pos')
+        negative_fileids = movie_reviews.fileids('neg')
+        # （4）将加载的数据划分为消极和积极：
+        features_positive = [(extract_features(movie_reviews.words(fileids=[f])),
+                              'Positive') for f in positive_fileids]
+        features_negative = [(extract_features(movie_reviews.words(fileids=[f])),
+                              'Negative') for f in negative_fileids]
+        # （5）将数据划分为训练数据和测试数据：
+        threshold_factor = 0.8
+        threshold_positive = int(threshold_factor * len(features_positive))
+        threshold_negative = int(threshold_factor * len(features_negative))
+        # （6）提取特征：
+        features_train = features_positive[:threshold_positive] + features_negative[:threshold_negative]
+        features_test = features_positive[threshold_positive:] + features_negative[threshold_negative:]
+        print("\nNumber of training datapoints:", len(features_train))
+        print("Number of test datapoints:", len(features_test))
+        # （7）调用朴素贝叶斯分类器：
+        classifier = NaiveBayesClassifier.train(features_train)
+        print("\nAccuracy of the classifier:", nltk.classify.util.accuracy(classifier, features_test))
+        # （8）输出分类结果：
+        print("\nTop 10 most informative words:")
+        for item in classifier.most_informative_features()[:10]:
+            print(item[0])
+        # （9）使用分类器对情感进行预测：
+        input_reviews = [
+            "It is an amazing movie",
+            "This is a dull movie. I would never recommend it to anyone.",
+            "The cinematography is pretty great in this movie",
+            "The direction was terrible and the story was all over the place"
+        ]
+        # （10）输出预测的结果：
+        print("\nPredictions:")
+        for review in input_reviews:
+            print("\nReview:", review)
+        probdist = classifier.prob_classify(extract_features(review.split()))
+        pred_sentiment = probdist.max()
+        print("Predicted sentiment:", pred_sentiment)
+        print("Probability:", round(probdist.prob(pred_sentiment), 2))
+    pass
 
 if __name__=="__main__":
-    # ss_nltk()
-    # ss_nltk2
-    countvec()
-    # countvec_chinese()
-    # countvec_chinese_jieba()
-    tfidf_countvec_chinese_jieba()
+    # nltk_brown()
+    # nltk_tokenize()
+    # nltk_stemming()
+    # nltk_lemmatization()
+    # nltk_POS()
+    # nltk_stop_words()
+    nltk_demo()
+    # nltk_tfidf()
+    # nltk_NB()
+    # nltk_sentiment_analysis()
+
     pass
